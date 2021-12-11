@@ -4,8 +4,6 @@ namespace Models;
 
 class Grid {
 
-//    public $height;
-//    public $width;
     public $cellArray;
 
     public function __construct($gridObjectOrArray = [])
@@ -51,35 +49,28 @@ class Grid {
     }
 
     public function setValues($valueArray){
-//        $this->height = count($valueArray);
-//        $this->width = count($valueArray[0]);
         $this->cellArray = $valueArray;
     }
 
     public function calculateNewValues(self $previousGridObject){
-//        $this->height = count($previousGridObject->cellArray);
-//        $this->width = count($previousGridObject->cellArray[0]);
-        //todo: Implement Neighbor counter (with age specification) in loop of cells to calculate new cell matrix
-        // todo possible: use separate class to organize neighbor counter code? if things get hairy?
         $oldCells = $previousGridObject->cellArray;
         foreach($oldCells as $rowKey => $row){
             foreach($row as $columnKey => $value){
                 $neighborFacts = self::calculateNeighborFacts($oldCells, $rowKey, $columnKey);
-                print(json_encode($neighborFacts) . "\n");
-                //todo: use $neighborFacts along with $value to determine $newValue in this grid's cellArray
+                $this->cellArray[$rowKey][$columnKey] = self::applyRulesToFindNewValue($value, $neighborFacts);
             }
         }
     }
 
-    public function calculateNeighborFacts($cellArray, $rowNum, $colNum){
+    public static function calculateNeighborFacts($cellArray, $rowNum, $colNum){
         $height = count($cellArray);
         $width = count($cellArray[0]);
         $rtn = [
             'neighborCount' => 0,
             'adultNeighborCount' => 0,
         ];
-        for($y = max($rowNum - 1, 0); $y <= $rowNum + 1 || $y <= $height; $y++){
-            for($x = max($colNum - 1, 0); $x <= $colNum + 1 || $x <= $width; $x++){
+        for($y = max($rowNum - 1, 0); $y <= $rowNum + 1 && $y <= $height; $y++){
+            for($x = max($colNum - 1, 0); $x <= $colNum + 1 && $x <= $width; $x++){
                 if($x == $colNum && $y == $rowNum){
                     //this is the target cell! Skip it!
                     continue;
@@ -95,6 +86,31 @@ class Grid {
             }
         }
         return $rtn;
+    }
+
+    public static function applyRulesToFindNewValue($oldValue, $neighborFacts){
+        $newValue = 0;
+        switch ($oldValue){
+            case 0:
+                if($neighborFacts['adultNeighborCount'] === 2){
+                    $newValue = 1;
+                }
+                break;
+            case 1:
+                if($neighborFacts['neighborCount'] < 5 && $neighborFacts['neighborCount'] > 1){
+                    $newValue = 2;
+                }
+                break;
+            case 2:
+                if($neighborFacts['neighborCount'] < 3 && $neighborFacts['neighborCount'] > 0){
+                    $newValue = 3;
+                }
+                break;
+            case 3:
+                //we all gotta die sometime, pal.
+                break;
+        }
+        return $newValue;
     }
 
 
