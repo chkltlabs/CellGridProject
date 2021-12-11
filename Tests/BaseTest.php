@@ -11,13 +11,16 @@ class BaseTest {
                 continue;
             }
             try{
-                if(static::$methodName()){
-                    print("$methodName ran successfully");
-                }else{
-                    print("$methodName failed...");
+                $result = static::$methodName();
+                if($result === true){
+                    print("$methodName ran successfully\n");
+                }else if($result === false){
+                    print("$methodName failed...\n");
+                }else {
+                    print("$methodName returned no result\n");
                 }
             }catch(\Exception $e){
-                print("$methodName threw an exception: " . $e->getMessage());
+                print("$methodName threw an exception: " . $e->getMessage() . "\n");
             }
         }
     }

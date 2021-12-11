@@ -75,10 +75,10 @@ class Grid {
                     //this is the target cell! Skip it!
                     continue;
                 }
-                if($cellArray[$x][$y] !== 0 && !is_null($cellArray[$x][$y])){
+                if($cellArray[$y][$x] !== 0 && !is_null($cellArray[$y][$x])){
                     //cell is occupied
                     $rtn['neighborCount']++;
-                    if($cellArray[$x][$y] == 2){
+                    if($cellArray[$y][$x] == 2){
                         //is an adult
                         $rtn['adultNeighborCount']++;
                     }
@@ -97,12 +97,14 @@ class Grid {
                 }
                 break;
             case 1:
-                if($neighborFacts['neighborCount'] < 5 && $neighborFacts['neighborCount'] > 1){
+                if($neighborFacts['neighborCount'] < 5
+                    && $neighborFacts['neighborCount'] > 1){
                     $newValue = 2;
                 }
                 break;
             case 2:
-                if($neighborFacts['neighborCount'] < 3 && $neighborFacts['neighborCount'] > 0){
+                if($neighborFacts['neighborCount'] < 3
+                    && $neighborFacts['neighborCount'] != 0){
                     $newValue = 3;
                 }
                 break;
@@ -114,7 +116,7 @@ class Grid {
     }
 
 
-    public function toArray(){
+    public function toString(){
         $rtn = '';
         foreach($this->cellArray as $rowKey => $row){
             $zeroedRow = array_map(function($item){
