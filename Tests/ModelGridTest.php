@@ -41,4 +41,8 @@ class ModelGridTest extends BaseTest{
         return serialize($expected) === serialize($actual);
     }
 
+    public static function testApplyRulesToFindNewValue(){
+
+    }
+
 }

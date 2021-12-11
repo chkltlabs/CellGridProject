@@ -13,11 +13,24 @@ class Grid {
             $this->calculateNewValues($gridObjectOrArray);
         }else{
             //validate the array is 2 dimensional, and filled with numerical values
+            $rowSize = 0;
             foreach($gridObjectOrArray as $rowKey => $row){
                 if(!is_array($row)){
                     throw new \Exception(
                         "Row $rowKey in input was not an array, \n
                         and is therefore disallowed. \n
+                        Try again.\n"
+                    );
+                }
+                if($rowSize === 0 && count($row)){
+                    $rowSize = count($row);
+                }else if($rowSize !== count($row)){
+                    $c = count($row);
+                    throw new \Exception(
+                        "Row $rowKey has a different length than \n
+                        previously checked rows. ($c vs $rowSize)\n 
+                        Your input must be a grid, \n
+                        with rows of equal size.\n 
                         Try again.\n"
                     );
                 }
@@ -36,20 +49,15 @@ class Grid {
                             Try again.\n"
                         );
                     }
-                    //todo: add exception for uneven row lengths
                 }
             }
             //argument to constructor is a valid array of starting values
-            $this->setValues($gridObjectOrArray);
+            $this->cellArray = $gridObjectOrArray;
         }
     }
 
     public function nextGrid(){
         return new self($this);
-    }
-
-    public function setValues($valueArray){
-        $this->cellArray = $valueArray;
     }
 
     public function calculateNewValues(self $previousGridObject){

@@ -107,8 +107,5 @@ class PredeterminedTestCases extends BaseTest{
         return serialize($expected) === serialize($next->cellArray);
     }
 
-    public static function completeAssignment(){
-
-    }
 
 }
